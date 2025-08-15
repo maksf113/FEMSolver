@@ -148,7 +148,7 @@ You can easily modify the simulation parameters to solve your own problems:
 ---
 
 ## 📂 Project Structure
-'''
+```
 FEMSolver/
 ├── src/
 │   ├── data_structures/ # Custom data structures (Array, List, Map, etc.)
@@ -163,7 +163,7 @@ FEMSolver/
 ├── fonts/ # Font files (e.g., Roboto_Condensed-Black.ttf)
 ├── screenshots/ # Application screenshots
 └── CMakeLists.txt # CMake build script
-'''
+```
 
 ---
 
