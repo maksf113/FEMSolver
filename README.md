@@ -64,7 +64,7 @@ This project uses CMake for building. Ensure you have the following dependencies
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/maksf113/FEMSolver
+    git clone https://github.com/maksf113/FEMSolver.git
     cd FEMSolver
     ```
 
