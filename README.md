@@ -195,17 +195,19 @@ For any questions, feedback, or suggestions, please feel free to reach out.
 
 ## 📸 More Screenshots
 
-![2D Mesh](screenshots/2.1.PNG)
-![2D Solution](screenshots/2.2.PNG)
-![3D Plot](screenshots/2.3.PNG)
-![3D Wireframe](screenshots/2.4.PNG)
+![](screenshots/2.1.PNG)
+![](screenshots/2.2.PNG)
+![](screenshots/2.3.PNG)
+![](screenshots/2.4.PNG)
 
-![2D Mesh](screenshots/3.1.PNG)
-![2D Solution](screenshots/3.2.PNG)
-![3D Plot](screenshots/3.3.PNG)
-![3D Wireframe](screenshots/3.4.PNG)
+![](screenshots/3.1.PNG)
+![](screenshots/3.2.PNG)
+![](screenshots/3.3.PNG)
+![](screenshots/3.4.PNG)
 
-![2D Mesh](screenshots/4.1.PNG)
-![2D Solution](screenshots/4.2.PNG)
-![3D Plot](screenshots/4.3.PNG)
-![3D Wireframe](screenshots/4.4.PNG)
+![](screenshots/4.1.PNG)
+![](screenshots/4.2.PNG)
+![](screenshots/4.3.PNG)
+![](screenshots/4.4.PNG)
+![](screenshots/4.5.PNG)
+![](screenshots/4.6.PNG)
