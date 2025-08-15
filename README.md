@@ -150,19 +150,19 @@ You can easily modify the simulation parameters to solve your own problems:
 ## 📂 Project Structure
 
 FEMSolver/
-|-- src/
-|   |-- data_structures/  # Custom data structures (Array, List, Map, etc.)
-|   |-- geometry/         # Mesh generation (Boundaries, Triangulation, BridsonGrid)
-|   |-- graphics/         # OpenGL rendering, shaders, and visualization tools
-|   |-- math/             # Custom math library (Vector, Matrix, Polynomial)
-|   |-- solver/           # Core FEM logic (Solver, Mesh, FiniteElement)
-|   |-- tools/            # Utility classes (e.g., Random)
-|   |-- window/           # Window and input management (GLFW, ImGui)
-|   |-- Application.hpp   # Main application class orchestrating all components
-|   +-- main.cpp          # Entry point of the application
-|-- fonts/                # Font files (e.g., Roboto_Condensed-Black.ttf)
-|-- screenshots/          # Application screenshots
-+-- CMakeLists.txt        # CMake build script
+├── src/
+│   ├── data_structures/ # Custom data structures (Array, List, Map, etc.)
+│   ├── geometry/ # Mesh generation (Boundaries, Triangulation, BridsonGrid)
+│   ├── graphics/ # OpenGL rendering, shaders, and visualization tools
+│   ├── math/ # Custom math library (Vector, Matrix, Polynomial)
+│   ├── solver/ # Core FEM logic (Solver, Mesh, FiniteElement)
+│   ├── tools/ # Utility classes (e.g., Random)
+│   ├── window/ # Window and input management (GLFW, ImGui)
+│   ├── Application.hpp # Main application class orchestrating all components
+│   └── main.cpp # Entry point of the application
+├── fonts/ # Font files (e.g., Roboto_Condensed-Black.ttf)
+├── screenshots/ # Application screenshots
+└── CMakeLists.txt # CMake build script
 
 
 ---
