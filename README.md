@@ -190,3 +190,22 @@ For any questions, feedback, or suggestions, please feel free to reach out.
 
 * **GitHub**: https://github.com/maksf113
 * **Email**: maksymilian.frankiewicz@gmail.com
+
+---
+
+## 📸 More Screenshots
+
+![2D Mesh](screenshots/2.1.PNG)
+![2D Solution](screenshots/2.2.PNG)
+![3D Plot](screenshots/2.3.PNG)
+![3D Wireframe](screenshots/2.4.PNG)
+
+![2D Mesh](screenshots/3.1.PNG)
+![2D Solution](screenshots/3.2.PNG)
+![3D Plot](screenshots/3.3.PNG)
+![3D Wireframe](screenshots/3.4.PNG)
+
+![2D Mesh](screenshots/4.1.PNG)
+![2D Solution](screenshots/4.2.PNG)
+![3D Plot](screenshots/4.3.PNG)
+![3D Wireframe](screenshots/4.4.PNG)
