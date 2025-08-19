@@ -72,6 +72,7 @@ private:
 	std::unique_ptr<Shader> m_shaderBackground;
 
 	std::unique_ptr<Framebuffer> m_framebuffer;
+	std::unique_ptr<Framebuffer> m_multisampleFramebuffer;
 	std::unique_ptr<UniformBuffer> m_uniformBuffer;
 	std::unique_ptr<VAO> m_solutionPlotVAO;
 	std::unique_ptr<VBO> m_solutionPlotVBO;
@@ -99,6 +100,7 @@ private:
 	float m_scaleMax;
 	float m_solutionScaleFactor;
 	int m_labelCount = 5; // scale division
+	uint32_t m_multisamples = 4;
 	ColorPalette m_palette = ColorPalette::INFERNO;
 
 	glm::vec3 m_plotMinBounds;
@@ -120,6 +122,7 @@ Renderer::Renderer(uint32_t width, uint32_t height) : m_width(width), m_height(h
 	GL(glHint(GL_POINT_SMOOTH_HINT, GL_NICEST));
 	GL(glPointSize(3));
 	m_framebuffer = std::make_unique<Framebuffer>(width, height);
+	m_multisampleFramebuffer = std::make_unique<Framebuffer>(width, height, m_multisamples);
 	m_shaderPlot = std::make_unique<Shader>("shaders/plot.vert", "shaders/plot.frag");
 	m_shaderMesh = std::make_unique<Shader>("shaders/mesh.vert", "shaders/mesh.frag");
 	m_shaderGrid = std::make_unique<Shader>("shaders/grid.vert", "shaders/grid.frag");
@@ -145,6 +148,7 @@ bool Renderer::resizeEvent(uint32_t newWidth, uint32_t newHeight)
 	if (newWidth == 0 || newHeight == 0)
 		return true;
 	m_framebuffer->resize(newWidth, newHeight);
+	m_multisampleFramebuffer->resize(newWidth, newHeight, m_multisamples);
 	m_width = newWidth;
 	m_height = newHeight;
 	GL(glViewport(0, 0, newWidth, newHeight));
@@ -157,15 +161,16 @@ bool Renderer::resizeEvent(uint32_t newWidth, uint32_t newHeight)
 void Renderer::draw()
 {
 
-	m_framebuffer->bind();
+	//m_framebuffer->bind();
+	m_multisampleFramebuffer->bind();
 	GL(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
 	GL(glClearDepth(1.0f));
 	GL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+	
+	GL(glViewport(0, 0, m_width, m_height));
 
 	// background
 	drawBackground();
-	
-	GL(glViewport(0, 0, m_framebuffer->width(), m_framebuffer->height()));
 
 	glm::mat4 view = m_camera.view();
 	glm::mat4 projection = m_camera.projection();
@@ -188,7 +193,9 @@ void Renderer::draw()
 	{
 		drawMesh();
 	}
-
+	m_multisampleFramebuffer->bind(GL_READ_FRAMEBUFFER);
+	m_framebuffer->bind(GL_DRAW_FRAMEBUFFER);
+	GL(glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height, GL_COLOR_BUFFER_BIT, GL_LINEAR));
 	m_framebuffer->drawToScreen(m_width, m_height);
 }
 
@@ -690,6 +697,7 @@ inline void Renderer::drawBackground()
 {
 	GL(glDisable(GL_DEPTH_TEST));
 	m_shaderBackground->bind();
+	m_shaderBackground->setUniform("u_resolution", m_width, m_height);
 	m_backgroundVAO->bind();
 	GL(glDrawArrays(GL_TRIANGLES, 0, 6));
 	m_backgroundVAO->unbind();

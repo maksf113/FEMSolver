@@ -37,24 +37,45 @@ private:
 Solver::Solver(const Triangulation& triangulation) : m_mesh(triangulation)
 {
 	m_materialManager.addMaterial({ 1.0 });
+
+	////   --- CASE 0 : CIRCLE WITH CIRCULAR AND DISTORTED CIRCULAR HOLE ---
 	//m_bcManager.addBC({ [](const Point& p) { return -0.5 * std::sin(3.0 * p[0]); } }); // 0 boundary id (outer)
 	//m_bcManager.addBC({ [](const Point& p) { return -1.0; } }); // 1 boundary id (inner)
 	//m_bcManager.addBC({ [](const Point& p) { return 1.0; } }); // 2 boundary id (inner)
 
-	// Outer boundary (ID 0): value depends on angle
-	m_bcManager.addBC({ [](const Point& p) {
-		return 5.0 * atan2(p[1], p[0]);
-	} });
+	//// --- CASE 1: SQUARE WITH CIRCULAR HOLE ---
+	//// Outer boundary (ID 0): Sine wave on top edge, 0 otherwise
+	//m_bcManager.addBC({ [](const Point& p) {
+	//	return (p[1] > 0.99) ? 10.0 * sin(pi() * (p[0] + 1.0) / 2.0) : 0.0;
+	//} });
 
-	// Inner hole 1 (ID 1)
-	m_bcManager.addBC({ [](const Point& p) {
-		return 20.0;
-	} });
+	//// Inner circle (ID 1): Constant value
+	//m_bcManager.addBC({ [](const Point& p) {
+	//	return -10.0;
+	//} });
 
-	// Inner hole 2 (ID 2)
-	m_bcManager.addBC({ [](const Point& p) {
-		return -5.0;
-	} });
+	// --- CASE 2: RECTANGLE WITH FOUR SQUARE HOLES ---
+	m_bcManager.addBC({ [](const Point& p) { return 0.0; } });     // 0: Outer boundary
+	m_bcManager.addBC({ [](const Point& p) { return 100.0; } });   // 1: Inner hole, top-left
+	m_bcManager.addBC({ [](const Point& p) { return -100.0; } });  // 2: Inner hole, top-right
+	m_bcManager.addBC({ [](const Point& p) { return -100.0; } });  // 3: Inner hole, bottom-left
+	m_bcManager.addBC({ [](const Point& p) { return 100.0; } });   // 4: Inner hole, bottom-right
+
+	//// --- CASE 3: FLOWER SHAPE WITH OFFSET HOLES ---
+	//// Outer boundary (ID 0): value depends on angle
+	//m_bcManager.addBC({ [](const Point& p) {
+	//	return 5.0 * atan2(p[1], p[0]);
+	//} });
+
+	//// Inner hole 1 (ID 1)
+	//m_bcManager.addBC({ [](const Point& p) {
+	//	return 20.0;
+	//} });
+
+	//// Inner hole 2 (ID 2)
+	//m_bcManager.addBC({ [](const Point& p) {
+	//	return -5.0;
+	//} });
 
 	// source term (rhs of PDE)
 	std::function<double(const Point& p)> source = [](const Point& p) {return 0.0; };

@@ -175,7 +175,7 @@ inline void GUI::createFrame(Renderer& renderer)
 	ImGui::Checkbox("Draw Grid", &renderer.getDrawGrid());
 	// color palette
 	ImGui::Separator();
-
+	ImGui::Text("Color Palette");
 	const char* paletteNames[] = { "Viridis", "Inferno", "Magma", "Plasma", "Cividis", "Coolwarm", "Jet" };
 	int currentItem = static_cast<int>(renderer.getPalette());
 	// combobox

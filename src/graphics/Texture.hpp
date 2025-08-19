@@ -8,6 +8,7 @@ class Texture
 {
 public:
 	Texture(uint32_t width, uint32_t height);
+	Texture(uint32_t width, uint32_t height, uint32_t samples);
 	explicit Texture(uint32_t width);
 	Texture(uint32_t width, uint32_t height, GLenum internalFormat, GLenum format, GLenum dtatType, const void* data);
 	~Texture();
@@ -41,6 +42,13 @@ Texture::Texture(uint32_t width, uint32_t height) : m_target(GL_TEXTURE_2D), m_w
 	magFilter(GL_LINEAR);
 	wrap(GL_CLAMP_TO_EDGE);
 	data(GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+}
+inline Texture::Texture(uint32_t width, uint32_t height, uint32_t samples)
+	: m_target(GL_TEXTURE_2D_MULTISAMPLE), m_width(width), m_height(height), m_chanels(4)
+{
+	GL(glGenTextures(1, &m_id));
+	bind();
+	GL(glTexImage2DMultisample(m_target, samples, GL_RGBA8, width, height, GL_TRUE));
 }
 inline Texture::Texture(uint32_t width) : m_target(GL_TEXTURE_1D), m_width(width), m_height(1), m_chanels(3)
 {

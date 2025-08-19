@@ -15,6 +15,10 @@ private:
 	Array<Array<GridNodeType>> m_nodeTypeGrid; // to identify "intirior" grid nodes for laplacian smoothing
 	AABB m_boundingBox;
 	double m_cellSize;
+	double m_boundaryFactor = 1.5; // factor to determine if point is near boundary
+	double m_growthFactor = 0.08; // factor increasing radius away from the boundaries
+	double m_deepInteriorFactor = 5.0; // factor to determine if point is far away from boundaries
+	int m_smoothingIterations = 100;
 public:
 	PoissonRadiusField(const Boundaries& boundaries);
 	~PoissonRadiusField() = default;
@@ -30,6 +34,7 @@ private:
 enum class PoissonRadiusField::GridNodeType
 {
 	INTERIOR,
+	DEEP_INTERIOR,
 	BOUNDARY,
 	EXTERIOR
 };
@@ -42,6 +47,7 @@ PoissonRadiusField::PoissonRadiusField(const Boundaries& boundaries)
 	double yMin = m_boundingBox.yMin;
 	double xSize = m_boundingBox.xMax - xMin;
 	double ySize = m_boundingBox.yMax - yMin;
+	double scale = std::max(xSize, ySize);
 	// N x M grid - N in x direction, M in y direction
 	size_t N = std::ceil(xSize / m_cellSize) + 1;
 	size_t M = std::ceil(ySize / m_cellSize) + 1;
@@ -71,8 +77,10 @@ PoissonRadiusField::PoissonRadiusField(const Boundaries& boundaries)
 		}
 	KDTree<BoundaryPoint, 2> kdTree(boundaryPoints);
 	// fill the grid 
-	// treshold to determine wheter grid node is boundary
-	double boundaryTreshold = boundaries.minDist() * 1.5;
+	//// treshold to determine wheter grid node is boundary
+	//double boundaryThreshold = boundaries.minDist() * 3.0;
+	//// deep interior threshold to determine wheter grid node is far from boundaries
+	//double deepInteriorThreshold = boundaryThreshold * m_deepInteriorFactor;
 	for(size_t i = 0; i < N; i++)
 		for (size_t j = 0; j < M; j++)
 		{
@@ -80,19 +88,34 @@ PoissonRadiusField::PoissonRadiusField(const Boundaries& boundaries)
 			double y = m_boundingBox.yMin + static_cast<double>(j) * m_cellSize;
 			Point gridPoint{ x, y };
 			BoundaryPoint nearest = kdTree.findNearest<Point>(gridPoint);
-			m_radiusGrid[i][j] = nearest.meanDist();
+			double boundaryRadius = nearest.meanDist();
+			double distanceToBoundary = dist(gridPoint, nearest);
+			m_radiusGrid[i][j] = boundaryRadius + scale * m_growthFactor * distanceToBoundary;
+
+			// treshold to determine wheter grid node is boundary
+			double boundaryThreshold = nearest.meanDist() * m_boundaryFactor;
+			// deep interior threshold to determine wheter grid node is far from boundaries
+			double deepInteriorThreshold = boundaryThreshold * m_deepInteriorFactor;
 
 			if (boundaries.pointInBoundaries(gridPoint))
 			{
-				if (dist(gridPoint, nearest) < boundaryTreshold)
+				if (dist(gridPoint, nearest) < boundaryThreshold)
+				{
 					m_nodeTypeGrid[i][j] = GridNodeType::BOUNDARY;
+				}
+				else if (distanceToBoundary >= deepInteriorThreshold)
+				{
+					m_nodeTypeGrid[i][j] = GridNodeType::DEEP_INTERIOR;
+				}
 				else
+				{
 					m_nodeTypeGrid[i][j] = GridNodeType::INTERIOR;
+				}
 			}
 			else
 				m_nodeTypeGrid[i][j] = GridNodeType::EXTERIOR;
 		}
-	laplaceSmoothing(100);
+	laplaceSmoothing(m_smoothingIterations);
 }
 
 inline double PoissonRadiusField::getRadius(const Point& p) const
@@ -108,6 +131,7 @@ inline double PoissonRadiusField::getRadius(const Point& p) const
 	assert(leftBottomJ >= 0 && leftBottomJ + 1 < m_radiusGrid[leftBottomI].size());
 	double fractionX = gridCoordX - leftBottomI;
 	double fractionY = gridCoordY - leftBottomJ;
+	// bilinear interpolation
 	// y interpolations (left, right)
 	double left = m_radiusGrid[leftBottomI][leftBottomJ] * (1.0 - fractionY) + m_radiusGrid[leftBottomI][leftBottomJ + 1] * fractionY;
 	double right = m_radiusGrid[leftBottomI + 1][leftBottomJ] * (1.0 - fractionY) + m_radiusGrid[leftBottomI + 1][leftBottomJ + 1] * fractionY;

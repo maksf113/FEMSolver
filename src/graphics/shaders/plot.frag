@@ -16,8 +16,7 @@ layout (std140, binding = 0) uniform u_data
 uniform sampler1D u_colorMap;
 
 uniform vec3 lightDir = vec3(-0.249, 0.498, -0.831);
-uniform float ambient = 0.3;
-uniform float lineHeight = 0.005;
+uniform float ambient = 0.35;
 
 void main()
 {
@@ -35,18 +34,16 @@ void main()
 	float lineFactor = 0.0;
 	if(drawIsolines == 1)
 	{
-		float normalizedValue = f_in_val;
 		float lineInterval = 1.0 / float(labelCount);
-		// f - position within isoline [0.0, 1.0]
-  		float f = fract(normalizedValue / lineInterval);
-		// distance to nearest isoline (f=0 and f=1)
-		// dist = 0 on the isoline and dist = 0.5 in the middle between two isolines 
+		// value in terms of line intervals
+		float v = f_in_val / lineInterval;
+		// reate of change of 'v' across pixel
+		float dv = fwidth(v);
+		// distance to the nearest isoline [0.0, 0.5]
+		float f = fract(v);
 		float dist = min(f, 1.0 - f);
-		// thickness factor accounting for plot steepness
-		float steepnessFactor = 1.0 / clamp(normal.z * normal.z, 0.01, 1.0);
-		float lineThickness = lineHeight * labelCount * steepnessFactor;
-		// line factor = 1 on the isoline and fades to 0 at 0.5*thickness
-		lineFactor = 1.0 - smoothstep(0.0, lineThickness / 2.0, dist);
+
+		lineFactor = 1.0 - smoothstep(dv * 0.1, dv * 1.0, dist);
 	}
 	vec3 lineColor = vec3(0.07, 0.07, 0.07);
 

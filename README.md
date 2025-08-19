@@ -1,6 +1,6 @@
 # FEMSolver: A C++ Finite Element Method Solver for 2D Diffusion Problems
 
-![FEM-Solver Visualization](screenshots/2.3.PNG)
+![FEM-Solver Visualization](screenshots/0.0.PNG)
 
 ## 📖 Project Description
 
@@ -155,7 +155,7 @@ FEMSolver/
 │   ├── geometry/ # Mesh generation (Boundaries, Triangulation, BridsonGrid)
 │   ├── graphics/ # OpenGL rendering, shaders, and visualization tools
 │   ├── math/ # Custom math library (Vector, Matrix, Polynomial)
-│   ├── solver/ # Core FEM logic (Solver, Mesh, FiniteElement)
+│   ├── solver/ # Core FEM logic (Solver, Mesh, FiniteElement, Sparse Matrix)
 │   ├── tools/ # Utility classes (e.g., Random)
 │   ├── window/ # Window and input management (GLFW, ImGui)
 │   ├── Application.hpp # Main application class orchestrating all components
@@ -188,7 +188,6 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 For any questions, feedback, or suggestions, please feel free to reach out.
 
-* **GitHub**: https://github.com/maksf113
 * **Email**: maksymilian.frankiewicz@gmail.com
 
 ---

@@ -39,7 +39,7 @@ private:
 	double m_cellSize;
 	double m_xSize;
 	double m_ySize;
-	const int m_maxAttempts = 100;
+	const int m_maxAttempts = 50;
 	AABB m_box;
 };
 
@@ -50,7 +50,7 @@ BridsonGrid::BridsonGrid(const Boundaries& boundaries) : m_boundaries(boundaries
 	double xSize = m_box.xMax - m_box.xMin;
 	double ySize = m_box.yMax - m_box.yMin;
 	// cell size based on minimal radius
-	double minRadius = boundaries.minDist();
+	double minRadius = boundaries.minDist() * 0.999;
 	m_cellSize = minRadius / std::sqrt(2.0);
 	// maximal indices
 	size_t iMax = std::ceil(xSize / m_cellSize);
@@ -85,14 +85,31 @@ inline void BridsonGrid::generateInnerPoints(Array<Point>& points)
 
 inline void BridsonGrid::addPoint(Array<Point>& points)
 {
-	// attempt to generate point around point in last active cell
-	const auto& cell = m_activeCells.back();
+	// attemot to generate a point around point in random active cell
+	size_t activeCellIdx = Random::get<size_t>(0, m_activeCells.size() - 1);
+	List<Cell>::Iterator activeCellIterator = m_activeCells.begin();
+	if (activeCellIdx < m_activeCells.size() / 2)
+	{
+		for (size_t idx = 0; idx < activeCellIdx; idx++)
+		{
+			++activeCellIterator;
+		}
+	}
+	else
+	{
+		activeCellIterator = m_activeCells.end();
+		for (size_t idx = m_activeCells.size(); idx > activeCellIdx; idx--)
+		{
+			--activeCellIterator;
+		}
+	}
+	const auto& cell = *activeCellIterator;
 	const auto& point = m_grid[cell.row][cell.col];
 	std::unique_ptr<Point> newPoint = nullptr;
 	for (int i = 0; i < m_maxAttempts; i++)
 	{
 		double poissonRadius = m_radiusField.getRadius(*point);
-		double radiusFactor = 2.0;
+		double radiusFactor = 1.5;
 		double r = Random::get(poissonRadius, radiusFactor * poissonRadius);
 		double phi = Random::get(0.0, 2.0 * pi());
 		int gridSearchRange = static_cast<int>(std::ceil(radiusFactor * poissonRadius / m_cellSize));
@@ -122,7 +139,7 @@ inline void BridsonGrid::addPoint(Array<Point>& points)
 			break;
 		}
 	}
-	m_activeCells.popBack();
+	m_activeCells.erase(activeCellIterator);
 	if (newPoint)
 	{
 		points.pushBack(*newPoint);
@@ -132,6 +149,7 @@ inline void BridsonGrid::addPoint(Array<Point>& points)
 		m_activeCells.pushBack(Cell(i, j));
 	}
 }
+
 
 inline bool BridsonGrid::filled() const
 {
