@@ -1,6 +1,6 @@
 # FEMSolver: A C++ Finite Element Method Solver for 2D Diffusion Problems
 
-![FEM-Solver Visualization](screenshots/0.0.PNG)
+![FEM-Solver Visualization](screenshots/0.1.PNG)
 
 ## 📖 Project Description
 
