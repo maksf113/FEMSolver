@@ -169,6 +169,7 @@ After a successful build, the executable will be located in the `build` director
 
 # On Windows
 ./build/Debug/FEMSolver.exe
+```
 
 ---
 
