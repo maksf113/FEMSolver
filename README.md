@@ -44,47 +44,131 @@ Its purpose is to serve as an educational and practical tool for understanding a
 
 ---
 
-## 🛠️ Installation Instructions
+## 🛠️ Installation and Building Instructions
 
-This project uses CMake for building. Ensure you have the following dependencies installed on your system.
+This project uses **CMake** to manage the build process. Below are detailed instructions to get the project compiled and running on your system.
 
-### Dependencies
+---
 
-* **CMake** (version 3.20 or higher)
-* A C++ compiler with **C++17 support** (e.g., GCC, Clang, MSVC)
+### 1. Prerequisites
+
+Before you begin, ensure you have the following software installed:
+
+* **CMake**: Version 3.20 or higher.
+* **A C++17 compliant compiler**: Such as GCC, Clang, or MSVC (included with Visual Studio).
+* **Git**: For cloning the repository.
+
+---
+
+### 2. Dependencies
+
+The project relies on several external libraries:
+
 * **GLEW** (The OpenGL Extension Wrangler Library)
 * **GLFW3** (A multi-platform library for OpenGL)
 * **GLM** (OpenGL Mathematics)
 * **Freetype** (A software font engine)
-* **ImGui** (Dear ImGui: Bloat-free Graphical User interface)
+* **Dear ImGui** (Bloat-free Graphical User interface)
 
-*Assumption: These dependencies are findable by CMake (e.g., installed via a package manager like vcpkg, brew, or apt, or their paths are set in your environment variables).*
+---
 
-### Building the Project
+### 3. Dependency Installation
 
-1.  **Clone the repository:**
+You have multiple options for installing these dependencies. **Method A is highly recommended for a smooth experience.**
+
+#### Method A: Using vcpkg (Recommended) 📦
+
+**vcpkg** is a C/C++ library manager that simplifies acquiring and linking dependencies across all platforms (Windows, macOS, Linux).
+
+1.  **Install vcpkg**: If you don't have vcpkg, follow the [official vcpkg quick start guide](https://vcpkg.io/en/getting-started.html) to install it.
+
+2.  **Install the required libraries**: Open your terminal or PowerShell and run the following command. This will download and build all necessary packages.
+
     ```bash
-    git clone https://github.com/maksf113/FEMSolver.git
+    vcpkg install glew glfw3 glm freetype imgui[glfw-binding,opengl3-binding]
+    ```
+    > **Note**: The `[glfw-binding,opengl3-binding]` features for ImGui are essential as they provide the necessary backend code to integrate ImGui with GLFW and OpenGL.
+
+3.  **(Optional but Recommended for Visual Studio users)** **Integrate vcpkg with your build environment**: This step makes Visual Studio automatically aware of all libraries installed by vcpkg.
+    ```bash
+    vcpkg integrate install
+    ```
+
+#### Method B: Using System Package Managers (Untested) 🧪
+
+This method is provided as a guideline for experienced Linux and macOS users. **It has not been tested and may require additional troubleshooting.**
+
+* **Ubuntu/Debian (apt)**:
+    ```bash
+    sudo apt update
+    sudo apt install libglew-dev libglfw3-dev libglm-dev libfreetype6-dev
+    ```
+
+* **macOS (Homebrew)**:
+    ```bash
+    brew install glew glfw glm freetype
+    ```
+
+> **Important**: System package managers typically do not provide Dear ImGui with the necessary bindings. If you use this method, you will likely need to integrate ImGui into the project manually (e.g., by adding it as a Git submodule).
+
+#### Method C: Manual Installation (Not Recommended) ⚠️
+
+If you choose not to use a package manager, you will need to download, build, and install each dependency yourself. You must then ensure CMake can find them, likely by setting the `CMAKE_PREFIX_PATH` environment variable. This process is complex and platform-dependent.
+
+---
+
+### 4. Building the Project ⚙️
+
+The build steps depend on how you installed the dependencies.
+
+#### Building with vcpkg (Command Line)
+
+1.  **Clone the repository**:
+    ```bash
+    git clone [https://github.com/maksf113/FEMSolver.git](https://github.com/maksf113/FEMSolver.git)
     cd FEMSolver
     ```
 
-2.  **Run CMake to configure the project:**
+2.  **Configure with CMake**: You **must** point CMake to the vcpkg toolchain file.
     ```bash
-    cmake -B build
+    # Replace [path/to/vcpkg] with the actual path to your vcpkg installation
+    cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=[path/to/vcpkg]/scripts/buildsystems/vcpkg.cmake
     ```
 
-3.  **Build the project:**
+3.  **Build the executable**:
     ```bash
     cmake --build build
     ```
-    On Linux/macOS with Makefiles, you can also run `make` inside the `build` directory. On Windows with Visual Studio, this will build the solution file located in the `build` directory.
 
-4.  **Run the executable:**
-    The executable will be located in the `build` directory (or a subdirectory like `build/Debug`).
+#### Building with Visual Studio + vcpkg integration (Easiest Method)
+
+If you ran `vcpkg integrate install`, this process is incredibly simple.
+
+1.  Open **Visual Studio** and select **File -> Open -> CMake...**.
+2.  Navigate to the cloned `FEMSolver` directory and select the `CMakeLists.txt` file.
+3.  Visual Studio will automatically configure the project. You can then build and run from the IDE.
+
+#### Building with System/Manual Dependencies
+
+1.  **Clone the repository** and `cd` into it.
+2.  **Configure and Build**:
     ```bash
-    ./build/FEMSolver
+    cmake -B build
+    cmake --build build
     ```
-    The `CMakeLists.txt` is configured to automatically copy the necessary shader and font files to the build directory, so it should run out of the box.
+
+---
+
+### 5. Running the Application ▶️
+
+After a successful build, the executable will be located in the `build` directory (or a subdirectory like `build/Debug` on Windows).
+
+```bash
+# On Linux/macOS
+./build/FEMSolver
+
+# On Windows
+./build/Debug/FEMSolver.exe
 
 ---
 
