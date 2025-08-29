@@ -28,7 +28,7 @@ Its purpose is to serve as an educational and practical tool for understanding a
 
 ---
 
-## 📄 Mathematical Foundations
+## 🧠 Mathematical Foundations
 
 To complement the practical C++ implementation, I have authored an accompanying document: A Geometrically Motivated Introductory Notes on Finite Element Method. This self-contained resource presents my perspective on the theoretical foundations of FEM, with a strong emphasis on its geometric interpretation as a projection method rooted in the Galerkin approach. It highlights how these concepts drive the implementation, offering insights into both the practical and theoretical aspects of the solver.
 
